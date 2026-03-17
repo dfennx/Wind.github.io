@@ -1,1 +1,222 @@
-<!DOCTYPE html><img src="https://github.com/dfennx/Wind.github.io/raw/main/img/liquid.gif" class="gif-arkaplan" alt="arkaplan">
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>wind · indir</title>
+    <style>
+        /* Temel sıfırlama */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            /* liquid.gif arka plana gömüldü */
+            background-image: url('img/liquid.gif');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* içeriğin okunması için hafif bir katman */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(2px);
+            z-index: 1;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 700px;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            margin: 1rem;
+        }
+
+        /* başlık */
+        h1 {
+            font-size: 5rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 3rem;
+            color: #222;
+            text-shadow: 2px 2px 10px rgba(255, 255, 255, 0.5);
+        }
+
+        /* link kutusu */
+        .input-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .link-input {
+            flex: 1 1 300px;
+            padding: 1rem 1.5rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 60px;
+            font-size: 1rem;
+            outline: none;
+            background: rgba(255, 255, 255, 0.9);
+            transition: 0.2s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .link-input:focus {
+            border-color: #222;
+            background: white;
+        }
+
+        /* butonlar */
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-primary {
+            background: #222;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .btn-primary:hover {
+            transform: scale(1.02);
+            background: #000;
+        }
+
+        /* switch butonu - ses/video geçiş */
+        .mode-switch {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 0.5rem;
+            border-radius: 60px;
+            border: 2px solid #222;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            backdrop-filter: blur(5px);
+        }
+
+        .mode-option {
+            padding: 0.6rem 1.8rem;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            user-select: none;
+        }
+
+        .mode-option.active {
+            background: #222;
+            color: white;
+        }
+
+        .mode-option:not(.active):hover {
+            background: #ddd;
+        }
+
+        /* durum göstergesi */
+        .current-mode {
+            margin-top: 1rem;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #222;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 0.5rem 1.5rem;
+            border-radius: 40px;
+            display: inline-block;
+            backdrop-filter: blur(5px);
+        }
+
+        .footer-note {
+            margin-top: 4rem;
+            font-size: 0.8rem;
+            opacity: 0.8;
+            color: #222;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>wind</h1>
+
+        <!-- link giriş alanı + indir butonu -->
+        <div class="input-group">
+            <input type="text" class="link-input" placeholder="video veya müzik linki yapıştır...">
+            <button class="btn btn-primary">indir</button>
+        </div>
+
+        <!-- SES / VİDEO switch butonu -->
+        <div class="mode-switch" id="modeSwitch">
+            <span class="mode-option active" data-mode="audio">🎵 Ses</span>
+            <span class="mode-option" data-mode="video">🎬 Video</span>
+        </div>
+
+        <!-- aktif modu gösteren yazı -->
+        <div class="current-mode" id="currentModeText">
+            Şu an: Ses indirme modu
+        </div>
+
+        <div class="footer-note">
+            wind · hızlı, basit, ücretsiz
+        </div>
+    </div>
+
+    <script>
+        const modeOptions = document.querySelectorAll('.mode-option');
+        const currentModeText = document.getElementById('currentModeText');
+        
+        modeOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                // tüm aktif sınıflarını kaldır
+                modeOptions.forEach(opt => opt.classList.remove('active'));
+                
+                // tıklanana aktif ekle
+                option.classList.add('active');
+                
+                // modu güncelle
+                const mode = option.dataset.mode;
+                if (mode === 'audio') {
+                    currentModeText.textContent = 'Şu an: Ses indirme modu 🎵';
+                } else {
+                    currentModeText.textContent = 'Şu an: Video indirme modu 🎬';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
