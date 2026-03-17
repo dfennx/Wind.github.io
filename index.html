@@ -5,33 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>İndirme Sitesi</title>
     <style>
-        body {
+        /* TÜM ELEMENTLERİ SIfIRLA */
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* HTML ve BODY tam ekran */
+        html, body {
+            width: 100%;
+            min-height: 100%;
+            height: 100%;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow-x: hidden;
         }
         
-        /* Sabit arka plan */
+        /* Sabit arka plan - TÜM PENCEREYİ KAPLA */
         body::before {
             content: "";
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            right: 0;
+            bottom: 0;
+            width: 100vw;
+            height: 100vh;
             background-image: url('https://i.postimg.cc/1tL7MdC0/47475456-9E6A-4664-80FA-747BEF81E0F5.gif');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             z-index: -1;
+            pointer-events: none; /* Arka plan tıklanabilirliği engellemesin */
         }
         
-        /* Logo */
+        /* Logo - üst orta */
         .logo-container {
             text-align: center;
             padding-top: 20px;
             margin-bottom: 40px;
+            position: relative;
+            z-index: 2;
         }
         
         .logo-container img {
@@ -40,18 +54,20 @@
             display: inline-block;
         }
         
-        /* Ana içerik */
+        /* Ana içerik - TAM EKRAN */
         .content {
             min-height: 100vh;
+            height: auto;
             display: flex;
             justify-content: center;
             align-items: flex-start;
             position: relative;
             z-index: 1;
             width: 100%;
+            background-color: transparent; /* Kesinlikle transparan */
         }
         
-        /* Ana kutu */
+        /* Ana kutu - esnek yükseklik */
         .main-container {
             width: 100%;
             max-width: 450px;
@@ -60,12 +76,15 @@
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
-            min-height: 100vh; /* İmza için */
+            min-height: 100vh; /* En az ekran boyutu kadar */
+            background-color: transparent; /* Transparan */
         }
         
-        /* İçerikleri esnet */
+        /* İçerikleri esnet - tüm boşluğu doldur */
         .content-wrapper {
-            flex: 1;
+            flex: 1 0 auto;
+            width: 100%;
+            background-color: transparent;
         }
         
         /* Link ve buton yan yana */
@@ -499,8 +518,10 @@
             flex-direction: column;
             align-items: center;
             gap: 0;
-            margin-top: 40px;  /* Panelden sonra boşluk */
+            margin-top: 40px;
             padding-bottom: 10px;
+            flex-shrink: 0; /* İmzanın boyutu sabit kalsın */
+            background-color: transparent;
         }
         
         .signature-top {
