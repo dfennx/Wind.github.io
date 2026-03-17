@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İndirme Sitesi</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+        }
+        
+        /* Sabit arka plan */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://i.postimg.cc/1tL7MdC0/47475456-9E6A-4664-80FA-747BEF81E0F5.gif');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: -1;
+        }
+        
+        /* Logo */
+        .logo-container {
+            text-align: center;
+            padding-top: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .logo-container img {
+            max-width: 180px;
+            height: auto;
+            display: inline-block;
+        }
+        
+        /* Ana içerik */
+        .content {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            position: relative;
+            z-index: 1;
+            width: 100%;
+        }
+        
+        /* Ana kutu */
+        .main-container {
+            width: 100%;
+            max-width: 450px;
+            margin: 0 auto;
+            padding: 20px 15px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* İmza için */
+        }
+        
+        /* İçerikleri esnet */
+        .content-wrapper {
+            flex: 1;
+        }
+        
+        /* Link ve buton yan yana */
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        
+        /* Link girişi */
+        .url-input {
+            flex: 1;
+            padding: 12px 20px;
+            font-size: 15px;
+            border: 1.5px solid #fecb47;
+            border-radius: 40px;
+            background: linear-gradient(
+                135deg, 
+                rgba(255, 255, 255, 0.15) 0%, 
+                rgba(255, 255, 255, 0.05) 50%, 
+                rgba(255, 255, 255, 0.15) 100%
+            );
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-shadow: 
+                0 4px 20px rgba(0, 0, 0, 0.2),
+                inset 0 0 20px rgba(255, 255, 255, 0.3),
+                inset 0 -5px 10px rgba(254, 203, 71, 0.2);
+            color: white;
+            transition: all 0.4s ease;
+            box-sizing: border-box;
+            text-align: center;
+            height: 45px;
+        }
+        
+        /* İNDİR BUTONU */
+        .download-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 40px;
+            border: 1.5px solid #fecb47;
+            background: linear-gradient(
+                135deg, 
+                rgba(255, 255, 255, 0.2) 0%, 
+                rgba(255, 255, 255, 0.05) 50%, 
+                rgba(255, 255, 255, 0.2) 100%
+            );
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-shadow: 
+                0 4px 15px rgba(0, 0, 0, 0.3),
+                inset 0 0 15px rgba(255, 255, 255, 0.4),
+                inset 0 -5px 10px rgba(254, 203, 71, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            padding: 0;
+        }
+        
+        .download-icon {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: #fecb47;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .download-btn:active .download-icon {
+            transform: scale(0.75);
+            stroke: white;
+        }
+        
+        .download-btn:hover {
+            transform: scale(1.1);
+            background: linear-gradient(
+                135deg, 
+                rgba(254, 203, 71, 0.3) 0%, 
+                rgba(255, 255, 255, 0.15) 50%, 
+                rgba(254, 203, 71, 0.3) 100%
+            );
+            box-shadow: 
+                0 6px 25px rgba(254, 203, 71, 0.4),
+                inset 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+        
+        .download-btn:hover .download-icon {
+            stroke: white;
+        }
+        
+        /* SWITCH BUTONU */
+        .switch-wrapper {
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .switch-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            width: 60px;
+        }
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                135deg, 
+                rgba(255, 255, 255, 0.1) 0%, 
+                rgba(255, 255, 255, 0.05) 50%, 
+                rgba(255, 255, 255, 0.1) 100%
+            );
+            backdrop-filter: blur(4px);
+            border: 1.5px solid #fecb47;
+            transition: 0.3s;
+            border-radius: 40px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            background: #fecb47;
+            transition: 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            border-radius: 50%;
+            box-shadow: 0 2px 10px rgba(254, 203, 71, 0.5);
+            top: 50%;
+            left: 4px;
+            transform: translateY(-50%);
+        }
+        
+        input:checked + .slider:before {
+            left: calc(100% - 26px);
+            background: #ffffff;
+            box-shadow: 0 2px 10px rgba(255, 255, 255, 0.5);
+        }
+        
+        /* Açılır panel */
+        .format-panel {
+            margin-top: 10px;
+            padding: 6px 0;
+            border-radius: 30px;
+            background: linear-gradient(
+                135deg, 
+                rgba(255, 255, 255, 0.15) 0%, 
+                rgba(0, 0, 0, 0.4) 50%, 
+                rgba(255, 255, 255, 0.15) 100%
+            );
+            backdrop-filter: blur(8px);
+            border: 1.5px solid #fecb47;
+            color: #fecb47;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            transition: opacity 0.3s ease;
+            opacity: 0;
+            pointer-events: none;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .format-panel.show {
+            opacity: 1;
+        }
+        
+        /* ORTAK PANEL STİLLERİ */
+        .panel-base {
+            margin-top: 40px;
+            width: 100%;
+            background: linear-gradient(
+                135deg, 
+                rgba(255, 255, 255, 0.1) 0%, 
+                rgba(0, 0, 0, 0.4) 50%, 
+                rgba(255, 255, 255, 0.1) 100%
+            );
+            backdrop-filter: blur(10px);
+            border: 1.5px solid #fecb47;
+            border-radius: 30px;
+            padding: 20px;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+        
+        /* VİDEO PANELİ */
+        .video-panel {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            width: 100%;
+        }
+        
+        .video-thumbnail {
+            width: 120px;
+            height: 90px;
+            background: linear-gradient(
+                135deg, 
+                rgba(255, 255, 255, 0.15) 0%, 
+                rgba(0, 0, 0, 0.3) 100%
+            );
+            border-radius: 20px;
+            border: 1.5px solid #fecb47;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .video-thumbnail svg {
+            width: 40px;
+            height: 40px;
+            stroke: #fecb47;
+            fill: none;
+        }
+        
+        .video-details {
+            flex: 1;
+            text-align: left;
+            color: white;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .video-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #fecb47;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.4;
+            max-height: 44px;
+            word-break: break-word;
+        }
+        
+        .video-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.8);
+            flex-wrap: wrap;
+        }
+        
+        .video-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .video-meta-item svg {
+            width: 14px;
+            height: 14px;
+            stroke: #fecb47;
+            fill: none;
+            flex-shrink: 0;
+        }
+        
+        .video-status {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(254, 203, 71, 0.2);
+            border: 1px solid #fecb47;
+            border-radius: 20px;
+            color: #fecb47;
+            font-size: 11px;
+            font-weight: bold;
+            align-self: flex-start;
+        }
+        
+        /* MÜZİK PANELİ */
+        .music-panel {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+        }
+        
+        .music-artwork {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(
+                135deg, 
+                rgba(254, 203, 71, 0.2) 0%, 
+                rgba(0, 0, 0, 0.5) 100%
+            );
+            border-radius: 15px;
+            border: 1.5px solid #fecb47;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        
+        .music-artwork img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.3));
+        }
+        
+        .music-info {
+            flex: 1;
+            min-width: 0;
+            text-align: left;
+        }
+        
+        .music-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #fecb47;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .music-artist {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .music-progress-container {
+            width: 100%;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+        
+        .music-progress {
+            width: 45%;
+            height: 100%;
+            background: #fecb47;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(254, 203, 71, 0.5);
+        }
+        
+        .music-time {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 0;
+        }
+        
+        .play-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1.5px solid #fecb47;
+            background: linear-gradient(
+                135deg, 
+                rgba(254, 203, 71, 0.2) 0%, 
+                rgba(255, 255, 255, 0.1) 50%, 
+                rgba(254, 203, 71, 0.2) 100%
+            );
+            backdrop-filter: blur(4px);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+        
+        .play-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: #fecb47;
+            stroke: none;
+        }
+        
+        .play-btn:hover {
+            transform: scale(1.1);
+            background: rgba(254, 203, 71, 0.3);
+        }
+        
+        .play-btn:hover svg {
+            fill: white;
+        }
+        
+        .placeholder-text {
+            color: rgba(255, 255, 255, 0.5);
+            font-style: italic;
+        }
+        
+        .panel-hidden {
+            display: none !important;
+        }
+        
+        /* ===== RAI NIGHTWALKER İMZASI ===== */
+        .signature {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+            margin-top: 40px;  /* Panelden sonra boşluk */
+            padding-bottom: 10px;
+        }
+        
+        .signature-top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: scale(0.6);
+            transform-origin: center;
+        }
+        
+        .signature-bottom {
+            transform: scale(0.4);
+            margin-top: -20px;
+            transform-origin: center;
+        }
+        
+        .signature img {
+            width: 64px;
+            height: 64px;
+            display: block;
+            border-radius: 4px;
+            object-fit: cover;
+        }
+        
+        .signature-text {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 24px;
+            letter-spacing: 1px;
+            font-weight: 300;
+            line-height: 1.2;
+            text-align: left;
+            font-family: "Copperplate", "Copperplate Gothic Light", fantasy;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Mobil düzen */
+        @media (max-width: 600px) {
+            .main-container {
+                max-width: 350px;
+            }
+            
+            .video-panel {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .video-thumbnail {
+                width: 100%;
+                height: 140px;
+            }
+            
+            .video-title {
+                font-size: 15px;
+                -webkit-line-clamp: 3;
+                max-height: 63px;
+            }
+            
+            .switch-container {
+                width: 50px;
+            }
+            
+            .switch {
+                width: 50px;
+                height: 26px;
+            }
+            
+            .slider:before {
+                height: 18px;
+                width: 18px;
+                left: 3px;
+            }
+            
+            input:checked + .slider:before {
+                left: calc(100% - 21px);
+            }
+            
+            .music-panel {
+                flex-wrap: wrap;
+            }
+            
+            .music-artwork {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .play-btn {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .play-btn svg {
+                width: 18px;
+                height: 18px;
+            }
+            
+            .signature-top {
+                transform: scale(0.5);
+            }
+            
+            .signature-bottom {
+                transform: scale(0.35);
+                margin-top: -25px;
+            }
+            
+            .signature-text {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Logo -->
+    <div class="logo-container">
+        <img src="https://i.postimg.cc/xj6Syjn8/IMG-1519.png" alt="Site Logosu">
+    </div>
+    
+    <!-- Ana içerik -->
+    <div class="content">
+        <div class="main-container">
+            
+            <!-- İçerikler -->
+            <div class="content-wrapper">
+                <!-- Link kutusu + indir butonu -->
+                <div class="input-group">
+                    <input type="text" class="url-input" placeholder="linki yapıştır..." id="urlInput">
+                    <button class="download-btn" id="downloadBtn">
+                        <svg class="download-icon" id="downloadIcon" viewBox="0 0 24 24">
+                            <path d="M12 3v12m0 0l-4-4m4 4l4-4" />
+                            <path d="M5 17h14" />
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Switch butonu -->
+                <div class="switch-wrapper">
+                    <div class="switch-container">
+                        <label class="switch">
+                            <input type="checkbox" id="formatToggle">
+                            <span class="slider"></span>
+                        </label>
+                        <div class="format-panel" id="formatPanel">MP4</div>
+                    </div>
+                </div>
+                
+                <!-- VİDEO PANELİ -->
+                <div class="panel-base" id="videoPanel">
+                    <div class="video-panel">
+                        <div class="video-thumbnail">
+                            <svg viewBox="0 0 24 24">
+                                <rect x="2" y="4" width="20" height="16" rx="2" ry="2"/>
+                                <polygon points="10 8 16 12 10 16 10 8" fill="#fecb47" stroke="none"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="video-details">
+                            <div class="video-title">
+                                <span class="placeholder-text">Link yapıştırınca video bilgileri görünecek</span>
+                            </div>
+                            
+                            <div class="video-meta">
+                                <div class="video-meta-item">
+                                    <svg viewBox="0 0 24 24">
+                                        <circle cx="12" cy="12" r="10"/>
+                                        <polyline points="12 6 12 12 16 14"/>
+                                    </svg>
+                                    <span>--:--</span>
+                                </div>
+                                <div class="video-meta-item">
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                        <circle cx="12" cy="12" r="3"/>
+                                    </svg>
+                                    <span>---</span>
+                                </div>
+                                <div class="video-meta-item">
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                        <circle cx="12" cy="7" r="4"/>
+                                    </svg>
+                                    <span>---</span>
+                                </div>
+                            </div>
+                            
+                            <div class="video-status">GEÇERLİ VIDEO</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- MÜZİK PANELİ -->
+                <div class="panel-base panel-hidden" id="musicPanel">
+                    <div class="music-panel">
+                        <div class="music-artwork">
+                            <img src="https://i.postimg.cc/xj6Syjn8/IMG-1519.png" alt="Logo">
+                        </div>
+                        
+                        <div class="music-info">
+                            <div class="music-title">
+                                <span class="placeholder-text">Şarkı adı burada görünecek</span>
+                            </div>
+                            <div class="music-artist">
+                                <span class="placeholder-text">Sanatçı adı</span>
+                            </div>
+                            
+                            <div class="music-progress-container">
+                                <div class="music-progress"></div>
+                            </div>
+                            
+                            <div class="music-time">
+                                <span>0:00</span>
+                                <span>3:45</span>
+                            </div>
+                        </div>
+                        
+                        <div class="play-btn" id="playBtn">
+                            <svg viewBox="0 0 24 24">
+                                <polygon points="8 5 19 12 8 19 8 5" fill="currentColor"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ===== RAI NIGHTWALKER İMZASI (EN ALTA EKLENDİ) ===== -->
+            <div class="signature">
+                <div class="signature-top">
+                    <img src="https://i.postimg.cc/76DpSh6t/IMG-1522.png" alt="İkon 1">
+                    <div class="signature-text">This site was created by<br>Rai NightWalker</div>
+                </div>
+                <div class="signature-bottom">
+                    <img src="https://i.postimg.cc/8sf3TSFg/IMG-1519.png" alt="İkon 2">
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <script>
+        const toggleSwitch = document.getElementById('formatToggle');
+        const formatPanel = document.getElementById('formatPanel');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const downloadIcon = document.getElementById('downloadIcon');
+        const videoPanel = document.getElementById('videoPanel');
+        const musicPanel = document.getElementById('musicPanel');
+        const playBtn = document.getElementById('playBtn');
+        
+        formatPanel.classList.remove('show');
+        formatPanel.textContent = 'MP4';
+        
+        toggleSwitch.addEventListener('change', function() {
+            formatPanel.classList.add('show');
+            
+            if (this.checked) {
+                formatPanel.textContent = 'M4A';
+                videoPanel.classList.add('panel-hidden');
+                musicPanel.classList.remove('panel-hidden');
+            } else {
+                formatPanel.textContent = 'MP4';
+                videoPanel.classList.remove('panel-hidden');
+                musicPanel.classList.add('panel-hidden');
+            }
+            
+            setTimeout(() => {
+                formatPanel.classList.remove('show');
+            }, 1500);
+        });
+        
+        downloadBtn.addEventListener('click', function() {
+            downloadIcon.classList.add('clicked');
+            setTimeout(() => {
+                downloadIcon.classList.remove('clicked');
+            }, 100);
+        });
+        
+        playBtn.addEventListener('click', function() {
+            this.classList.toggle('playing');
+            const svg = this.querySelector('svg');
+            
+            if (this.classList.contains('playing')) {
+                svg.innerHTML = '<rect x="7" y="5" width="4" height="14" fill="currentColor"/><rect x="13" y="5" width="4" height="14" fill="currentColor"/>';
+            } else {
+                svg.innerHTML = '<polygon points="8 5 19 12 8 19 8 5" fill="currentColor"/>';
+            }
+        });
+        
+        document.getElementById('urlInput').addEventListener('paste', function() {
+            setTimeout(() => {
+                document.querySelector('#videoPanel .video-title').innerHTML = 'Bu çok çok çok uzun bir video başlığı, ne kadar uzun olursa olsun artık site kaymayacak';
+                document.querySelector('#videoPanel .video-meta-item:first-child span').textContent = '12:34';
+                document.querySelector('#videoPanel .video-meta-item:nth-child(2) span').textContent = '1.2M';
+                document.querySelector('#videoPanel .video-meta-item:nth-child(3) span').textContent = 'Video Kanalı';
+                
+                document.querySelector('#musicPanel .music-title').innerHTML = 'Örnek Şarkı Adı';
+                document.querySelector('#musicPanel .music-artist').innerHTML = 'Sanatçı İsmi';
+            }, 500);
+        });
+    </script>
+</body>
+</html>
