@@ -1,1 +1,36 @@
-ö
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background: linear-gradient(45deg, #ffcb47, #ffb347, #ffcb47);
+    background-size: 400% 400%;
+    animation: dalgalanma 10s ease infinite;
+    position: relative;
+    overflow-x: hidden;
+}
+
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.2) 0%, transparent 50%),
+                radial-gradient(circle at 70% 30%, rgba(255,255,255,0.15) 0%, transparent 50%),
+                radial-gradient(circle at 10% 80%, rgba(255,255,255,0.1) 0%, transparent 50%);
+    pointer-events: none;
+    animation: ışıkHareketi 15s ease infinite;
+}
+
+@keyframes dalgalanma {
+    0% { background-position: 0% 50% }
+    50% { background-position: 100% 50% }
+    100% { background-position: 0% 50% }
+}
+
+@keyframes ışıkHareketi {
+    0% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.1); }
+    100% { opacity: 0.5; transform: scale(1); }
+}
