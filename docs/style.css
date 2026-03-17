@@ -7,13 +7,16 @@ html, body {
     font-family: Arial, sans-serif;
 }
 
-/* GIF arkaplan - DÜZENLENDİ */
+/* GIF arkaplan - TAM EKRAN DÜZENLENDİ */
 .gif-arkaplan {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    transform: translate(-50%, -50%);
     object-fit: cover;
     z-index: -1;
     pointer-events: none;
