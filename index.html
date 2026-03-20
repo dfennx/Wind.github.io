@@ -12,13 +12,20 @@
             box-sizing: border-box;
         }
         
-        /* HTML ve BODY tam ekran */
+        /* HTML ve BODY tam ekran - BEYAZ YENİLEME ALANI ENGELLENDİ */
         html, body {
             width: 100%;
             min-height: 100%;
             height: 100%;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow-x: hidden;
+            overscroll-behavior-y: none; /* Beyaz yenileme alanını engeller */
+            -webkit-overflow-scrolling: touch; /* iOS için kaydırma hissini korur */
+        }
+        
+        /* Ek önlem */
+        html {
+            overscroll-behavior-y: none;
         }
         
         /* Sabit arka plan - TÜM PENCEREYİ KAPLA */
